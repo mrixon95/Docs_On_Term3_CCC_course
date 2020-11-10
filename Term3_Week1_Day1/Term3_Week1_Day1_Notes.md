@@ -1,29 +1,102 @@
-# EC2 creation for POSTGRES SQL
+# Introduction (Database and DBMS)
 
-Very brief overview for creating an EC2 instance and connecting remotely through Python scripts. This is the set up configuration only at a very base level without taking into consideration neccesary security steps in limiting IP access etc etc.
+Join the Coder Academy CCC team on Discord using https://discord/gg/qGUpN5K
 
-## Create EC2 instance
+### Difference between data and information
 
-1. Choose Ubuntu Server 64 bit
-![Ubuntu Sever Selection](docs/sever_selection.jpg)
-2. Select appropriate tier (t2 micro free in this case) 
-![select tier](docs/configuration_size.jpg)
-3. Select Next Configure Instance Details
-4. Select Next Add Storage (unless custom settings required)
-5. Storage has been left as the default in this instance
-6. Select Next Add tags
-7. Tags have been left as default in this instance
-8. Select next and you should now be on the security page
-![Security Page](docs/security_page.jpg)
-9. Next add a rule
-![Security Add](docs/security_page_add_rule.jpg) 
-10.  Rule type PostgresSQL, Source set to 0.0.0.0/0
-![Security Postgres](docs/security_page_postgres.jpg)
-11. Select Review and jpg
-12. Choose key pair or existing key pair. Make sure you are of possesion of the key if choosing new key pair.
-13. Launch Instance
+Data is unprocessed raw facts without conveying meaning.
+Processed data which is now meaningful is information. It can be used for decision-making
+eg. Student grade inputs are raw data. Processed data that becomes a meaningful transcript is information.
 
-## SSH into instance
+Database has data in it as well as metadata (data about the data)
+
+A relational database has tables where each table has multiple records and records in one table are related to records in another table.
+eg. table for students, courses
+table that relates students to courses through joint tables
+
+Data in same column (field) have the same data type
+Each column is a field and the row is a record/tuple.
+Relations means tables and a relation is a collection of records.
+
+To create and manage databases we have a DBMS (Database Management System). The DBMS serves as an interface between the user and the databases. A DBMS improves data sharing, data security and data integration. A DBMS allows you to create and manage databases.
+
+
+A DBMS uses ACID concepts to maintain database health.
+Atomicity: A transaction needs to be completely run and never partially. Its all or nothing.
+Consistency: This means the Database is always in a correct state eg. We are not left in a mid-transaction state where one account fails to update after $20 withdrawn from one's account.
+Isolation: Transactions running concurrently with eachother but don't cause errors so that it is like they are run concurrently.
+Durability: Transactions are stored regardless of software or hardware failure
+
+It is important to properly design your database.
+
+Tools for data modelling include:
+https://www.smartdraw.com/entity-relationship-diagram/
+https://www.microsoft.com/en-GB/microsoft-365/p/visio-standard-2019/cfq7ttc0k7cf?activetab=pivot:overviewtab
+https://www.diagrameditor.com/
+
+
+Rectangle: Entity set (Student, Course)
+Diamond: Relationship (Enrol)
+Ellipses: Attributes (student_id, student_name, student_city, course_code, course_name)
+- double: Multivalued attribute
+- dashed: Derived attribute
+Underline: Primary Key attribute (student_id)
+Line: Is the link between entity sets and relationship or attributes
+
+Multivalued attribute eg. country code in a phone number
+
+
+The diagram has entities, attributes and relationships
+A database is modelled using an Entity Relationship Diagram. This diagram shows entities and the relationships between them.
+An entity is an object like a student, car, company, plant etc.
+Entities have attributes which are descriptive properties for all members of the entity set eg. a student entity has attributes like name, address and DoB.
+A relationship is an association among several entities. 
+
+Primary key uniquely identifies a record.
+
+The symbol next to the entity is the cardinality (the maximum number in the relationship) and the symbol closer to the relationship is the ordinality (the minimum number in the relationship)
+
+Zero is represented by a small circle
+One is represented by a small line 
+Many is represented by the crow's foot notation
+
+Types of relationships:
+
+One to One:
+
+One student has only one contact details record
+A contact details record belongs to just one student
+
+Little Straight Line represents one and only one. Looks like a one.
+
+
+One to Many:
+
+One customer can make many orders
+An order is made by one and only one customer
+
+
+Many to Many:
+
+A student can enrol in many courses
+A courses can have many students
+
+Many to many relationships require a junction/joint table which has the primary key of each of the two entities
+that are related to each other.
+Primary keys are like an index for quickly retrieving records in your table.
+
+Cardinality refers to the maximum number of relationships.
+Ordinality refers to the minimum number of relationships.
+
+Cardinality refers to the maximum number of times an instance in one entity can be associated with instances in the related entity. Modality refers to the minimum number of times an instance in one entity can be associated with an instance in the related entity.
+
+
+Primary keys uniquely identify records.
+PKs cannot be Null. To link tables with another you need a PK.
+
+One to many relationship requires a foreign 
+
+<!-- ## SSH into instance
 
 1. Take note of public IP address for the created instance eg:ec2-54-88-60-6.compute-1.amazonaws.com or 54.88.60.6. If an elastic IP has not been set then these could change and need to be updated
 2. Check the permissions of the key that was downloaded in the previous section step 10. Navigate to where the key was saved in your system then:
@@ -165,4 +238,4 @@ Very brief overview for creating an EC2 instance and connecting remotely through
    ALTER ROLE postgres WITH PASSWORD 'postgres';
    ```
    In this example postgres has been used as the password
-
+ -->
