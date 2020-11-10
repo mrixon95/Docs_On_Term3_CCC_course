@@ -102,12 +102,12 @@ PKs cannot be Null. To link tables with another you need a PK.
 
 One to many relationship requires a foreign key
 
-![onetomany](docs/onetomany.jpg) 
+![onetomany](docs/onetomany.png) 
 
 
 Many to many relationship requires a Junction/Join table
 
-![manytomany](docs/manytomany.jpg) 
+![manytomany](docs/manytomany.png) 
 
 
 <!-- ## SSH into instance
