@@ -2,13 +2,15 @@
 
 Join the Coder Academy CCC team on Discord using https://discord/gg/qGUpN5K
 
-### Difference between data and information
+## Difference between data and information
 
 Data is unprocessed raw facts without conveying meaning.
 Processed data which is now meaningful is information. It can be used for decision-making
 eg. Student grade inputs are raw data. Processed data that becomes a meaningful transcript is information.
 
 Database has data in it as well as metadata (data about the data)
+
+## Relational databases
 
 A relational database has tables where each table has multiple records and records in one table are related to records in another table.
 eg. table for students, courses
@@ -29,10 +31,14 @@ Durability: Transactions are stored regardless of software or hardware failure
 
 It is important to properly design your database.
 
+## Database design tools
+
 Tools for data modelling include:
 https://www.smartdraw.com/entity-relationship-diagram/
 https://www.microsoft.com/en-GB/microsoft-365/p/visio-standard-2019/cfq7ttc0k7cf?activetab=pivot:overviewtab
 https://www.diagrameditor.com/
+
+## Elements of a database design
 
 
 Rectangle: Entity set (Student, Course)
@@ -60,9 +66,9 @@ Zero is represented by a small circle
 One is represented by a small line 
 Many is represented by the crow's foot notation
 
-Types of relationships:
+## Types of relationships:
 
-One to One:
+### One to One:
 
 One student has only one contact details record
 A contact details record belongs to just one student
@@ -70,13 +76,13 @@ A contact details record belongs to just one student
 Little Straight Line represents one and only one. Looks like a one.
 
 
-One to Many:
+### One to Many:
 
 One customer can make many orders
 An order is made by one and only one customer
 
 
-Many to Many:
+### Many to Many:
 
 A student can enrol in many courses
 A courses can have many students
@@ -94,7 +100,15 @@ Cardinality refers to the maximum number of times an instance in one entity can 
 Primary keys uniquely identify records.
 PKs cannot be Null. To link tables with another you need a PK.
 
-One to many relationship requires a foreign 
+One to many relationship requires a foreign key
+
+![onetomany](docs/onetomany.jpg) 
+
+
+Many to many relationship requires a Junction/Join table
+
+![manytomany](docs/manytomany.jpg) 
+
 
 <!-- ## SSH into instance
 
