@@ -100,156 +100,59 @@ Cardinality refers to the maximum number of times an instance in one entity can 
 Primary keys uniquely identify records.
 PKs cannot be Null. To link tables with another you need a PK.
 
-One to many relationship requires a foreign key
+One to many relationship requires one table's PK to be a foreign key in another table
 
 ![onetomany](docs/onetomany.png) 
 
 
-Many to many relationship requires a Junction/Join table
+Many to many relationship requires a Junction/Join table. The joint table contains two foreign keys that are the primary keys of the tables in the relation
 
 ![manytomany](docs/manytomany.png) 
 
 
-<!-- ## SSH into instance
 
-1. Take note of public IP address for the created instance eg:ec2-54-88-60-6.compute-1.amazonaws.com or 54.88.60.6. If an elastic IP has not been set then these could change and need to be updated
-2. Check the permissions of the key that was downloaded in the previous section step 10. Navigate to where the key was saved in your system then:
-    ```
-    :~/key$ ls -l
-    total 8
-    -rwx------ 1 colforst colforst 1700 Oct 27 13:17 aws_educate.pem
-    -rwx------ 1 colforst colforst 1692 Oct 26 15:56 duck.pem
-    :~/key$
-    ```
-    This checks the permissions of the key. Both keys here have permissions set for only the owner which is what we want. The command required to set these permissions for duck for example is:
 
-    ```
-    :~/key$ chmod 700 duck.pem
-    ```
-3. Now we can use this key to connect to our instance. You can either be in the folder that the key is in or type the absolute path. For example:
+### Normalization
 
-   This command can be used with the absolute path
-    ```
-    :~$ ssh -i /home/colforst/key/duck.pem ubuntu@54.88.60.6
-    ```
-    Or this command can be used if in the folder
-    ```
-    :~/key$ ssh -i duck.pem ubuntu@54.88.60.6
-    ```
-   Also note ubuntu is the user name of the instance we created
+Normalization is about elimating unnecessary redundancy and duplication of data. Decompose one table into multiple tables to achieve the 3NF.
 
-4. OPTIONAL ONLY - if we are always connecting to an instance we can set a config file to enable us to write a shortcut to connect. It is basically the steps as outlined previously but put into a script. 
-   1. Go to your .ssh directory. The standard directory is in /home/username
-   ```
-   :~$ pwd
-   /home/colforst
-   :~$ ls -a
-   .   .bash_history  .bashrc  .config     .ipython  .jupyter    .local       .mume     .psql_history  .python_history  .sudo_as_admin_successful  .vscode-server  .xsession         key
-   ..  .bash_logout   .cache   .gitconfig  .john     .landscape  .motd_shown  .profile  .pylint.d      .ssh             .viminfo                   .wget-hsts      .xsession#enable
-   ```
-   I have used the ls -a command to show hidden files and we can see the .ssh file is in there.
-   2. Create the config file in the .ssh folder
-   ```
-   :~$ cd .ssh
-   :~/.ssh$ touch config
-   ```
-   3. Open the file usingL
-   ```
-   :~/.ssh$ vim config
-   ```
-   4. The edits are as follows.
-   ```
-   Host *
-       PORT 22
-   Host ec2db
-       HostName 54.88.60.6
-       User ubuntu
-       IdentityFile /home/colforst/key/duck.pem
-   ```
-   The host ec2db was created by me and is now the shortcut to connect to the system. With this file in place I can now connect to the instance with:
 
-   ```
-   :~$ ssh ec2db
-   ```
-   as the command. You can enter more then one connection with the config file and also use it with keys stored in id_rsa.
+First Normal Form (1NF) Rules:
+1. Column names must be unique. eg. can't have 2 columns called student_id 
+2. Records in one column must be of same type. eg. can't have student_id of type text and type integer
+3. Order of records does not matter.
+4. Must have atomic values in columns eg. one value per field
 
-## Install POSTGRES SQL on EC2 instance
+![Not1NF](docs/Not1NF.png) 
 
-1. SSH into the ec2 instance and install postgres.
-   ```
-   sudo apt update
-   sudo apt-get install postgresql
-   ```
-2. Login into the postgres shell using:
-   ```
-   sudo -u postgres psql
-   ```
-3. Postgres sql is now running on the instance. However it has not been set up for remote queries or inputs from say a python script.
+![1NF](docs/1NF.png) 
 
-## Upddate POSTGRES SQL for access remotely using python scripts.
 
-1. Log into postgres on the ec2 instance as outlined in step 2 of the previous section.
-2. Type the following command and copy the path that is listed.
-   ```
-   SHOW config_file;
-   ```
-   The path listed comes out as:
-   ```
-    /etc/postgresql/12/main/postgresql.conf
-   ```
-3. Exit postgres sql and type the following in your command console to open this file to edit.
-   ```
-   sudo vim /etc/postgresql/12/main/postgresql.conf
-   ```
-   Go down the page until you find:
-   ```
-   #listen_addresses = 'localhost'
-   ```
-   Uncomment the line and change the above to
-   ```
-   listen_addresses = '*'
-   ```
-   Postgres sql will know be listening to all addresses. Save and exit vim
-4. Type the following command and copy the path that is listed.
-   ```
-   SHOW hba_file;
-   ```
-   The path listed comes out as:
-   ```
-    /etc/postgresql/12/main/pg_hba.conf
-   ```
-5. Exit postgres sql and type the following in your command console to open this file to edit.
-   ```
-   sudo vim /etc/postgresql/12/main/pg_hba.conf
-   ```
-   Scroll down to the very bottom where the entries are as follows:
-   ```
-   # replication privilege.
-   local   replication     all                                     peer
-   host    replication     all             127.0.0.1/32            md5
-   host    replication     all             ::1/128                 md5
-   ```
-   Create a new line and enter the following on the new line
-   ```
-   host    all             all             0.0.0.0/0               md5
-   ```
-   The table should now look like this:
-   ```
-   # replication privilege.
-   local   replication     all                                     peer
-   host    replication     all             127.0.0.1/32            md5
-   host    replication     all             ::1/128                 md5
+Second Normal Form (2NF) Rules:
+1. Table must be in 1NF
+2. Must be no partial dependencies
 
-   host    all             all             0.0.0.0/0               md5
-   ```
-   Postgres sql will now also accept requests from all IP addresses. Save and exit vim.
-6. Now that these changes have been made restart postgres sql:
-   ```
-   sudo service postgresql restart
-   ```
-7. Add a password to the user postgres. First log into postgres shell as per previous step
-   ```
-   ALTER ROLE postgres WITH PASSWORD 'postgres';
-   ```
-   In this example postgres has been used as the password
- -->
+
+![Not2NF](docs/Not2NF.png) 
+
+![2NF](docs/2NF.png) 
+
+The table has a composite key of Student_Id and Course_Code Course_name only depends on course_code and student_id only depends on student_name so there is a partial dependency. To satisfy 2NF we need to create a seperate course table. Now the composite key Student_Id and Course_code determines the Student_Name
+
+
+Third Normal Form (3NF) Rules:
+1. Table must be in 2NF.
+2. Must be no Transitive Dependencies
+
+
+
+![Not3NF](docs/Not3NF.png) 
+
+![3NF](docs/3NF.png) 
+
+![Not3NF](docs/NotBCNF.png) 
+
+![3NF](docs/BCNF.png) 
+
+
+![3NF](docs/StudentCourseERD.png) 
