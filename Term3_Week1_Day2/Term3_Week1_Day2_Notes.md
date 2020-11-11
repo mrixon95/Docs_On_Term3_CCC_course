@@ -7,36 +7,49 @@ SQL is a language for defining, manipulating and controlling databases.
 ## Kahoot! Questions and Answers
 
 Q1: A ___ is a collection of related reocrds or a collection of related tables
+
 A1: Database
 
 Q2: You can create/manage a single or multiuser database using a ____
+
 A2: DBMS
 
 Q3: A student, company, car, or plant are examples of ____.
+
 A3: Entity
 
 Q4: A name, address, and date of birth are examples of ____.
+
 A4: Attributes
 
 Q5: A 1-to-1, 1-to-Many, and Many-to-Many are examples of ____.
+
 A5: Relationship
 
 Q6: This ERD is ____.
+
 A6: One-to-One
+
 ![3NF](docs/1t1ERD.png) 
 
 Q7: This ERD is ____.
+
 A7: One-to-Many
+
 ![3NF](docs/ERD1toMany.png) 
 
 Q8: This ERD is ____.
+
 A8: Many-to-Many
+
 ![3NF](docs/ERDManytoMany.png) 
 
 Q9: What is Not True in this relationship?
+
 A9: A student can have no course enrolments (Optional)
 
 Q10: Which 1NF rule this table doesn't satisfy
+
 A10: Must have atomic values in columns
 
 
@@ -59,7 +72,7 @@ SQL is a database language and like programming languages needs a system to run 
 
 Postgres comes with a default role of postgres
 
-### Launch psql utility or connect to sql server using :
+### Launch psql utility or connect to sql server using:
 ```
     
 	sudo apt-get --purge remove postgresql
@@ -74,6 +87,7 @@ Postgres comes with a default role of postgres
 ```
 
 
+### Useful SQL commands:
 
 ```
 /* See all users */
@@ -111,6 +125,7 @@ Postgres comes with a default role of postgres
 ```
 
 
+### Create a database, tables and roles
 
 ```
 
@@ -147,9 +162,11 @@ CREATE TABLE Person(
 /* Create role dbuser - by default it cannot login */
 create role dbuser
 
+```
 
 ![cannotlogin](docs/cannotlogin.PNG) 
 
+```
 
 /*
 
