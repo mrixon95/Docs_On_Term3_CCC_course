@@ -23,15 +23,15 @@ A5: Relationship
 
 Q6: This ERD is ____.
 A6: One-to-One
-![3NF](docs/OneToOne.png) 
+![3NF](docs/1t1ERD.png) 
 
 Q7: This ERD is ____.
 A7: One-to-Many
-![3NF](docs/OneToMany.png) 
+![3NF](docs/ERD1toMany.png) 
 
 Q8: This ERD is ____.
 A8: Many-to-Many
-![3NF](docs/ManyToMany.png) 
+![3NF](docs/ERDManytoMany.png) 
 
 Q9: What is Not True in this relationship?
 A9: A student can have no course enrolments (Optional)
@@ -148,7 +148,7 @@ CREATE TABLE Person(
 create role dbuser
 
 
-![cannotlogin](docs/cannotlogin.png) 
+![cannotlogin](docs/cannotlogin.PNG) 
 
 
 /*
