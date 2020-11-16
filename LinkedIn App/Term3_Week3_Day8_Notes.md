@@ -1,6 +1,7 @@
-# EC2 creation for POSTGRES SQL
+# Overview
 
-Very brief overview for creating an EC2 instance and connecting remotely through Python scripts. This is the set up configuration only at a very base level without taking into consideration neccesary security steps in limiting IP access etc etc.
+My Trello board for this app is located here: https://trello.com/b/7Y9qhmBJ/project-management
+
 
 ## Create EC2 instance
 
