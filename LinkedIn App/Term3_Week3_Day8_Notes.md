@@ -2,11 +2,22 @@
 
 My Trello board for this app is located here: https://trello.com/b/7Y9qhmBJ/project-management
 
+My app is designed to be a LinkedIn site for IT professionals.
+Similar to LinkedIn, IT professionals will be able to:
+* create an account
+* make posts and add photos of themselves
+* write a bio and add work experience
+* connect, follow and message other users
+* list their skills, experience, education and add a link to their github account
+* like and comment on other posts
+* advertise for freelance IT work
+
+![(docs/LoginPageWireframe.pdf)
 
 ## Create EC2 instance
 
 1. Choose Ubuntu Server 64 bit
-![Ubuntu Sever Selection](docs/sever_selection.jpg)
+![Ubuntu Sever Selection](docs/LoginPageWireframe.jpg)
 2. Select appropriate tier (t2 micro free in this case) 
 ![select tier](docs/configuration_size.jpg)
 3. Select Next Configure Instance Details
