@@ -12,7 +12,7 @@ Similar to LinkedIn, IT professionals will be able to:
 * like and comment on other posts
 * advertise for freelance IT work
 
-![(docs/LoginPageWireframe.pdf)
+![(docs/Login_Page_Wireframe.jpg)
 
 ## Create EC2 instance
 
