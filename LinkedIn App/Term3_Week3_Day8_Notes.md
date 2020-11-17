@@ -10,7 +10,10 @@ Similar to LinkedIn, IT professionals will be able to:
 * connect, follow and message other users
 * list their skills, experience, education and add a link to their github account
 * like and comment on other posts
-* advertise for freelance IT work
+
+Different from LinkedIn as of November, 2020, IT professionals will be able to:
+* freely advertise themselves for freelance IT work
+* join groups with people who have similar interests
 
 
 # Wireframes
@@ -19,13 +22,16 @@ Similar to LinkedIn, IT professionals will be able to:
 ![Login_Page_Wireframe](docs/Login_Page_Wireframe.jpg)
 
 ### Profile page
-![Profile_Page_Wireframe](docs/Profile_Page_Wireframe.jpg)
+![Profile_Page_Wireframe](docs/Profile_Page_Wireframe.png)
 
 ### Activity Feed page
 ![Activity_Feed_Wireframe](docs/Activity_Feed_Wireframe.png)
 
+### Settings page
+![Setting_Page_Wireframe](docs/Setting_Page_Wireframe.png)
 
-# Overview
+### Entity Relationship diagram
+![Entity_Relationship_Diagram](docs/DatabaseTerm3Project.png)
 
 ## Create EC2 instance
 
