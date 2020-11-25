@@ -100,6 +100,28 @@ Table User_Resume_Projects {
   last_updated timestamp [default: `now()`]
 }
 
+Table User_Meetings {
+  id int [pk, increment] // auto-increment
+  user_id int [ref: > U.id]
+  time_start timestamp
+  time_end timestamp
+  location varchar
+  subject varchar
+  description varchar
+  last_updated timestamp [default: `now()`]
+}
+
+
+Table Job_Salaries {
+  id int [pk, increment] // auto-increment
+  title varchar
+  lower_quartile int
+  median_salary int
+  upper_quartile int
+  avg_years_experience int
+  last_updated timestamp [default: `now()`]
+}
+
 
 Table User_Certifications {
   id int [pk, increment] // auto-increment

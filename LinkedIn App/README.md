@@ -46,6 +46,15 @@ Docs for my app:
 ![Entity_Relationship_Diagram](docs/ERD_Diagram_dbdiagramio.png)
 
 
+## Installation
+In order to install this application:-
+
+```Code```python3.8-venv and python3-pip installed on your system.
+Clone the application onto your system from GitHub
+Navigate to the traveldiary folder, create and activate the python3.8 virtual environment.
+Install application dependencies within the activated Python3.8 virtual environment by running pip install -r requirements.txt.
+
+
 ## Setup
 Create a .env file with the .env.example template within the src folder and populate the required fields within the .env file.
 
