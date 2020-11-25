@@ -628,7 +628,7 @@ paths:
     post:
       tags:
       - "study"
-      summary: "Add new student info"
+      summary: "Add new study info"
       description: ""
       operationId: "createStudy"
       consumes:
@@ -672,11 +672,11 @@ paths:
           description: "Successful operation"
         "400":
           description: "Unable to create blog post"
-  /study/{user_id}/{post_id}:
+  /study/{user_id}/{study_id}:
     get:
       tags:
       - "study"
-      summary: "View blog post by blog_id"
+      summary: "View study info with a particular study_id"
       description: "Returns a single blog post"
       operationId: "viewStudy"
       produces:
@@ -688,7 +688,7 @@ paths:
         description: "fetched upon successful login"
         required: true
         type: "string"
-      - name: "post_id"
+      - name: "study_id"
         in: "path"
         description: "fetched on selection of link to blog post"
         required: true
@@ -703,7 +703,7 @@ paths:
     put:
       tags:
       - "study"
-      summary: "Update blog message"
+      summary: "Update study info entry"
       description: ""
       operationId: "updateStudy"
       consumes:
@@ -717,7 +717,7 @@ paths:
         description: "Fetched upon successful login"
         required: true
         type: "string"
-      - name: "post_id"
+      - name: "study_id"
         in: "path"
         description: "Fetched on selection to update post"
         required: true
@@ -761,7 +761,7 @@ paths:
         description: "User who created the blog message"
         required: true
         type: "string"
-      - name: "post_id"
+      - name: "study_id"
         in: "path"
         description: "The message post to be deleted"
         required: true
@@ -777,7 +777,7 @@ paths:
     post:
       tags:
       - "certification"
-      summary: "Create new post"
+      summary: "Create new certification"
       description: ""
       operationId: "createCertification"
       consumes:
@@ -821,11 +821,11 @@ paths:
           description: "Successful operation"
         "400":
           description: "Unable to create blog post"
-  /certification/{user_id}/{post_id}:
+  /certification/{user_id}/{cert_id}:
     get:
       tags:
       - "certification"
-      summary: "View blog post by blog_id"
+      summary: "View a particular certification"
       description: "Returns a single blog post"
       operationId: "viewCertification"
       produces:
@@ -852,7 +852,7 @@ paths:
     put:
       tags:
       - "certification"
-      summary: "Update blog message"
+      summary: "Update certification"
       description: ""
       operationId: "updateCertification"
       consumes:
@@ -901,7 +901,7 @@ paths:
     delete:
       tags:
       - "certification"
-      summary: "Delete blog message"
+      summary: "Delete certification"
       description: ""
       operationId: "deleteCertification"
       parameters:
@@ -926,7 +926,7 @@ paths:
     post:
       tags:
       - "resumeprojects"
-      summary: "Create new post"
+      summary: "Create new resumeprojects post"
       description: ""
       operationId: "createResumeProjects"
       consumes:
@@ -974,7 +974,7 @@ paths:
     get:
       tags:
       - "resumeprojects"
-      summary: "View blog post by blog_id"
+      summary: "View resumeprojects post by post_id"
       description: "Returns a single blog post"
       operationId: "viewResumeProjects"
       produces:
@@ -1001,7 +1001,7 @@ paths:
     put:
       tags:
       - "resumeprojects"
-      summary: "Update blog message"
+      summary: "Update resumeprojects post"
       description: ""
       operationId: "updateResumeProjects"
       consumes:
@@ -1050,7 +1050,7 @@ paths:
     delete:
       tags:
       - "resumeprojects"
-      summary: "Delete blog message"
+      summary: "Delete resumeprojects post"
       description: ""
       operationId: "deleteResumeProjects"
       parameters:
@@ -1104,6 +1104,7 @@ paths:
           description: "Successful operation"
         "400":
           description: "Unable to create blog post"
+
   /connection/{user_id_1}/{user_id_2}/status:       
     get:
       tags:
@@ -1165,6 +1166,39 @@ paths:
           description: "Invalid link"
         "404":
           description: "Blog post not found"
+  /connection/{user_id_1}/{user_id_2}/confirm:
+    put:
+      tags:
+      - "connection"
+      summary: "Confirm connection between two users"
+      description: ""
+      operationId: "createConnection"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "user_id_1"
+        in: "path"
+        description: "fetched upon successful login"
+        required: true
+        type: "string"
+      - name: "user_id_2"
+        in: "path"
+        description: "fetched on selection of link to blog post"
+        required: true
+        type: "integer"
+      - name: "blog_photos"
+        in: "formData"
+        description: ""
+        required: true
+        type: "file"
+      responses:
+        "200":
+          description: "Successful operation"
+        "400":
+          description: "Unable to create blog post"
   /connection/{user_id_1}/{user_id_2}/delete:       
     delete:
       tags:
@@ -1198,6 +1232,3 @@ paths:
           description: "Successful operation"
         "400":
           description: "Unable to create blog post"  
-
-
-
