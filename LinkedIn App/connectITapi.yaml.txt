@@ -1,0 +1,1203 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "Connect IT - a LinkedIn kind of networking platform for IT professionals"
+host: "traveldiary.io"
+tags:
+- name: "user"
+  description: "User related functions"
+- name: "post"
+  description: "Posts made on profile for each user"
+- name: "message"
+  description: "Info about messages made between two users"
+- name: "study"
+  description: "Add study info"  
+- name: "certification"
+  description: "Add certification info"  
+- name: "resumeprojects"
+  description: "Add resume and project info"
+- name: "connection"
+  description: "Add info about connections between two people"  
+
+schemes:
+- "https"
+- "http"
+paths:
+  /user/register:
+    post:
+      tags:
+      - "user"
+      summary: "Register User"
+      description: "This creates a new account for a new user."
+      operationId: "createUser"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "User registration details"
+        required: true
+        schema:
+          $ref: "<path_to_object>"
+          # contains email, username, password
+      responses:
+        "200":
+          description: "successful operation"
+        "400":
+          description: "Email/Username already exists"
+  /user/login:
+    get:
+      tags:
+      - "user"
+      summary: "Logs user into Connect IT"
+      operationId: "loginUser"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "username"
+        in: "query"
+        description: "The user name for login"
+        required: true
+        type: "string"
+      - name: "password"
+        in: "query"
+        description: "The password for login in clear text"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+        "400":
+          description: "Invalid username/password supplied"
+  /user/logout:
+    get:
+      tags:
+      - "user"
+      summary: "Logs out the currently logged in user"
+      operationId: "logoutUser"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters: []
+      responses:
+        default:
+          description: "successful operation"
+  /user/{user_id}/profile:
+    get:
+      tags:
+      - "user"
+      summary: "Get a particular user's profile info"
+      description: ""
+      operationId: "getProfile"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "Fetched from username upon successful login."
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+        "400":
+          description: "Invalid username supplied"
+        "404":
+          description: "User not found"
+    put:
+      tags:
+      - "user"
+      summary: "Updates user profile info"
+      description: "This can only be done by the logged in user."
+      operationId: "updateUserProfile"      
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "username retrieved upon successful login"
+        required: true
+        type: "string"
+      - name: "name"
+        in: "formData"
+        description: "Profile name"
+        required: true
+        type: "string"
+      - name: "age"
+        in: "formData"
+        description: "User's age"
+        required: false
+        type: "integer"
+      - name: "from_location"
+        in: "formData"
+        description: "Location where user is from"
+        required: true
+        type: "string"
+      - name: "interests"
+        in: "formData"
+        description: "User's interests"
+        required: false
+        type: "string"
+      - name: "bio"
+        in: "formData"
+        description: "A little bit about the user"
+        required: false
+        type: "string"
+      - name: "profile_picture"
+        in: "formData"
+        description: "file to upload"
+        required: false
+        type: "file"
+      responses:
+        "200":
+          description: "Successful operation"
+        "400":
+          description: "Unable to update profile"
+        "404":
+          description: "User not found"
+  /user/{user_id}/account:
+    put:
+      tags:
+      - "user"
+      summary: "Updates user account details"
+      description: "This can only be done by the logged in user."
+      operationId: "updateUserPassword"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "username retrieved upon successful login"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Updated password"
+        schema:
+          $ref: "<path_to_object>"
+          # contains email, username, password
+      responses:
+        "200":
+          description: "Successful operation"
+        "400":
+          description: "Unable to update profile"
+        "404":
+          description: "User not found"
+    delete:
+      tags:
+      - "user"
+      summary: "Delete user account"
+      description: "This can only be done by the logged in user."
+      operationId: "deleteUser"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "The user that needs to be deleted"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Successful operation"
+        "400":
+          description: "Invalid username supplied"
+        "404":
+          description: "User not found"
+  
+  /user/{user_id}/post:
+    post:
+      tags:
+      - "post"
+      summary: "Create new post"
+      description: ""
+      operationId: "createPost"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "Fetched upon successful login"
+        required: true
+        type: "string"
+      - name: "title"
+        in: "formData"
+        description: "post title"
+        required: true
+        type: "string"
+      - name: "date"
+        in: "formData"
+        description: "blog post date"
+        required: true
+        type: "number"
+      - name: "place(s)"
+        in: formData
+        description: "featured place(s) in blog post"
+        required: true
+        type: "string"
+      - name: "blog text"
+        in: "formData"
+        description: "blog text"
+        required: true
+        type: "string"
+      - name: "blog_photos"
+        in: "formData"
+        description: ""
+        required: true
+        type: "file"
+      responses:
+        "200":
+          description: "Successful operation"
+        "400":
+          description: "Invalid username supplied"
+        "404":
+          description: "User not found"
+  
+
+  
+  
+    /user/{user_id}/posts:
+    get:
+      tags:
+      - "post"
+      summary: "View all of the user's posts"
+      description: "Returns a single blog post"
+      operationId: "viewAllPosts"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "fetched upon successful login"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+        "400":
+          description: "Invalid link"
+        "404":
+          description: "Blog post not found"
+          
+  /user/{user_id}/post/{post_id}:
+    get:
+      tags:
+      - "post"
+      summary: "View a user's post"
+      description: "Returns a single blog post"
+      operationId: "viewPost"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "fetched upon successful login"
+        required: true
+        type: "string"
+      - name: "post_id"
+        in: "path"
+        description: "fetched on selection of link to blog post"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "successful operation"
+        "400":
+          description: "Invalid link"
+        "404":
+          description: "Blog post not found"
+    put:
+      tags:
+      - "post"
+      summary: "Update a user's post"
+      description: "Returns a single blog post"
+      operationId: "updatePost"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "fetched upon successful login"
+        required: true
+        type: "string"
+      - name: "post_id"
+        in: "path"
+        description: "fetched on selection of link to blog post"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "successful operation"
+        "400":
+          description: "Invalid link"
+        "404":
+          description: "Blog post not found"
+  
+  /user/{user_id}/last_post:
+    delete:
+      tags:
+      - "post"
+      summary: "Delete last post from a particular user"
+      description: ""
+      operationId: "deletePost"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "User who created the blog post"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Successful operation"
+        "400":
+          description: "Invalid blog_id"
+    
+  /user/{user_id}/all_posts:  
+    delete:
+      tags:
+      - "post"
+      summary: "Delete all posts for a particular user"
+      description: ""
+      operationId: "deleteAllPosts"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "User who created the blog post"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Successful operation"
+        "400":
+          description: "Invalid blog_id"
+    
+  /message/{user_id_1}/{user_id_2}/all:
+    get:
+      tags:
+      - "message"
+      summary: "View all messages between user_1 and user_2"
+      description: ""
+      operationId: "viewMessages"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "user_id_1"
+        in: "path"
+        description: "Fetched upon successful login"
+        required: true
+        type: "string"
+      - name: "user_id_2"
+        in: "path"
+        description: "post title"
+        required: true
+        type: "string"
+      - name: "date"
+        in: "formData"
+        description: "blog post date"
+        required: true
+        type: "number"
+      - name: "place(s)"
+        in: formData
+        description: "featured place(s) in blog post"
+        required: true
+        type: "string"
+      - name: "blog text"
+        in: "formData"
+        description: "blog text"
+        required: true
+        type: "string"
+      - name: "blog_photos"
+        in: "formData"
+        description: ""
+        required: true
+        type: "file"
+      responses:
+        "200":
+          description: "Successful operation"
+        "400":
+          description: "Unable to create blog post"
+  /message/{user_id_1}/{user_id_2}:
+    post:
+      tags:
+      - "message"
+      summary: "Post message between user_1 and user_2"
+      description: ""
+      operationId: "postMessage"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "user_id_1"
+        in: "path"
+        description: "Fetched upon successful login"
+        required: true
+        type: "string"
+      - name: "user_id_2"
+        in: "path"
+        description: "post title"
+        required: true
+        type: "string"
+      - name: "date"
+        in: "formData"
+        description: "blog post date"
+        required: true
+        type: "number"
+      - name: "place(s)"
+        in: formData
+        description: "featured place(s) in blog post"
+        required: true
+        type: "string"
+      - name: "blog text"
+        in: "formData"
+        description: "blog text"
+        required: true
+        type: "string"
+      - name: "blog_photos"
+        in: "formData"
+        description: ""
+        required: true
+        type: "file"
+      responses:
+        "200":
+          description: "Successful operation"
+        "400":
+          description: "Unable to create blog post"
+    get:
+      tags:
+      - "message"
+      summary: "View last message between user_1 and user_2"
+      description: ""
+      operationId: "viewLastMessage"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "user_id_1"
+        in: "path"
+        description: "Fetched upon successful login"
+        required: true
+        type: "string"
+      - name: "user_id_2"
+        in: "path"
+        description: "post title"
+        required: true
+        type: "string"
+      - name: "date"
+        in: "formData"
+        description: "blog post date"
+        required: true
+        type: "number"
+      - name: "place(s)"
+        in: formData
+        description: "featured place(s) in blog post"
+        required: true
+        type: "string"
+      - name: "blog text"
+        in: "formData"
+        description: "blog text"
+        required: true
+        type: "string"
+      - name: "blog_photos"
+        in: "formData"
+        description: ""
+        required: true
+        type: "file"
+      responses:
+        "200":
+          description: "Successful operation"
+        "400":
+          description: "Unable to create blog post"
+    put:
+      tags:
+      - "message"
+      summary: "Update last message between user_1 and user_2"
+      description: ""
+      operationId: "updateMessage"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "user_id_1"
+        in: "path"
+        description: "Fetched upon successful login"
+        required: true
+        type: "string"
+      - name: "user_id_2"
+        in: "path"
+        description: "post title"
+        required: true
+        type: "string"
+      - name: "date"
+        in: "formData"
+        description: "blog post date"
+        required: true
+        type: "number"
+      - name: "place(s)"
+        in: formData
+        description: "featured place(s) in blog post"
+        required: true
+        type: "string"
+      - name: "blog text"
+        in: "formData"
+        description: "blog text"
+        required: true
+        type: "string"
+      - name: "blog_photos"
+        in: "formData"
+        description: ""
+        required: true
+        type: "file"
+      responses:
+        "200":
+          description: "Successful operation"
+        "400":
+          description: "Unable to create blog post"
+    
+    delete:
+      tags:
+      - "message"
+      summary: "Delete last message between user_1 and user_2"
+      description: ""
+      operationId: "deleteMessage"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "user_id_1"
+        in: "path"
+        description: "Fetched upon successful login"
+        required: true
+        type: "string"
+      - name: "user_id_2"
+        in: "path"
+        description: "post title"
+        required: true
+        type: "string"
+      - name: "date"
+        in: "formData"
+        description: "blog post date"
+        required: true
+        type: "number"
+      - name: "place(s)"
+        in: formData
+        description: "featured place(s) in blog post"
+        required: true
+        type: "string"
+      - name: "blog text"
+        in: "formData"
+        description: "blog text"
+        required: true
+        type: "string"
+      - name: "blog_photos"
+        in: "formData"
+        description: ""
+        required: true
+        type: "file"
+      responses:
+        "200":
+          description: "Successful operation"
+        "400":
+          description: "Unable to create blog post" 
+          
+  
+
+          
+  /study/{user_id}:
+    post:
+      tags:
+      - "study"
+      summary: "Add new student info"
+      description: ""
+      operationId: "createStudy"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "Fetched upon successful login"
+        required: true
+        type: "string"
+      - name: "title"
+        in: "formData"
+        description: "post title"
+        required: true
+        type: "string"
+      - name: "date"
+        in: "formData"
+        description: "blog post date"
+        required: true
+        type: "number"
+      - name: "place(s)"
+        in: formData
+        description: "featured place(s) in blog post"
+        required: true
+        type: "string"
+      - name: "blog text"
+        in: "formData"
+        description: "blog text"
+        required: true
+        type: "string"
+      - name: "blog_photos"
+        in: "formData"
+        description: ""
+        required: true
+        type: "file"
+      responses:
+        "200":
+          description: "Successful operation"
+        "400":
+          description: "Unable to create blog post"
+  /study/{user_id}/{post_id}:
+    get:
+      tags:
+      - "study"
+      summary: "View blog post by blog_id"
+      description: "Returns a single blog post"
+      operationId: "viewStudy"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "fetched upon successful login"
+        required: true
+        type: "string"
+      - name: "post_id"
+        in: "path"
+        description: "fetched on selection of link to blog post"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "successful operation"
+        "400":
+          description: "Invalid link"
+        "404":
+          description: "Blog post not found"
+    put:
+      tags:
+      - "study"
+      summary: "Update blog message"
+      description: ""
+      operationId: "updateStudy"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "Fetched upon successful login"
+        required: true
+        type: "string"
+      - name: "post_id"
+        in: "path"
+        description: "Fetched on selection to update post"
+        required: true
+        type: "integer"
+      - name: "title"
+        in: "formData"
+        description: "blog post title"
+        required: true
+        type: "string"
+      - name: "place(s)"
+        in: "formData"
+        description: "place(s) on which blog post is about"
+        required: false
+        type: "string"
+      - name: "blog text"
+        in: "formData"
+        description: "blog text body"
+        required: true
+        type: "string"
+      - name: "blog_photos"
+        in: "formData"
+        description: "photos to update"
+        required: false
+        type: "file"
+      responses:
+        "200":
+          description: "Successful operation"
+        "400":
+          description: "Unable to update blog post"
+        "404":
+          description: "Blog post not found"
+    delete:
+      tags:
+      - "study"
+      summary: "Delete blog message"
+      description: ""
+      operationId: "deleteStudy"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "User who created the blog message"
+        required: true
+        type: "string"
+      - name: "post_id"
+        in: "path"
+        description: "The message post to be deleted"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "Successful operation"
+        "400":
+          description: "Invalid blog_id"
+        "404":
+          description: "Blog post not found"
+  /certification/{user_id}/post:
+    post:
+      tags:
+      - "certification"
+      summary: "Create new post"
+      description: ""
+      operationId: "createCertification"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "Fetched upon successful login"
+        required: true
+        type: "string"
+      - name: "title"
+        in: "formData"
+        description: "post title"
+        required: true
+        type: "string"
+      - name: "date"
+        in: "formData"
+        description: "blog post date"
+        required: true
+        type: "number"
+      - name: "place(s)"
+        in: formData
+        description: "featured place(s) in blog post"
+        required: true
+        type: "string"
+      - name: "blog text"
+        in: "formData"
+        description: "blog text"
+        required: true
+        type: "string"
+      - name: "blog_photos"
+        in: "formData"
+        description: ""
+        required: true
+        type: "file"
+      responses:
+        "200":
+          description: "Successful operation"
+        "400":
+          description: "Unable to create blog post"
+  /certification/{user_id}/{post_id}:
+    get:
+      tags:
+      - "certification"
+      summary: "View blog post by blog_id"
+      description: "Returns a single blog post"
+      operationId: "viewCertification"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "fetched upon successful login"
+        required: true
+        type: "string"
+      - name: "post_id"
+        in: "path"
+        description: "fetched on selection of link to blog post"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "successful operation"
+        "400":
+          description: "Invalid link"
+        "404":
+          description: "Blog post not found"
+    put:
+      tags:
+      - "certification"
+      summary: "Update blog message"
+      description: ""
+      operationId: "updateCertification"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "Fetched upon successful login"
+        required: true
+        type: "string"
+      - name: "post_id"
+        in: "path"
+        description: "Fetched on selection to update post"
+        required: true
+        type: "integer"
+      - name: "title"
+        in: "formData"
+        description: "blog post title"
+        required: true
+        type: "string"
+      - name: "place(s)"
+        in: "formData"
+        description: "place(s) on which blog post is about"
+        required: false
+        type: "string"
+      - name: "blog text"
+        in: "formData"
+        description: "blog text body"
+        required: true
+        type: "string"
+      - name: "blog_photos"
+        in: "formData"
+        description: "photos to update"
+        required: false
+        type: "file"
+      responses:
+        "200":
+          description: "Successful operation"
+        "400":
+          description: "Unable to update blog post"
+        "404":
+          description: "Blog post not found"
+    delete:
+      tags:
+      - "certification"
+      summary: "Delete blog message"
+      description: ""
+      operationId: "deleteCertification"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "User who created the blog message"
+        required: true
+        type: "string"
+      - name: "post_id"
+        in: "path"
+        description: "The message post to be deleted"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "Successful operation"
+        "400":
+          description: "Invalid blog_id"
+        "404":
+          description: "Blog post not found"
+  /resumeprojects/{user_id}/post:
+    post:
+      tags:
+      - "resumeprojects"
+      summary: "Create new post"
+      description: ""
+      operationId: "createResumeProjects"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "Fetched upon successful login"
+        required: true
+        type: "string"
+      - name: "title"
+        in: "formData"
+        description: "post title"
+        required: true
+        type: "string"
+      - name: "date"
+        in: "formData"
+        description: "blog post date"
+        required: true
+        type: "number"
+      - name: "place(s)"
+        in: formData
+        description: "featured place(s) in blog post"
+        required: true
+        type: "string"
+      - name: "blog text"
+        in: "formData"
+        description: "blog text"
+        required: true
+        type: "string"
+      - name: "blog_photos"
+        in: "formData"
+        description: ""
+        required: true
+        type: "file"
+      responses:
+        "200":
+          description: "Successful operation"
+        "400":
+          description: "Unable to create blog post"
+  /resumeprojects/{user_id}/{post_id}:
+    get:
+      tags:
+      - "resumeprojects"
+      summary: "View blog post by blog_id"
+      description: "Returns a single blog post"
+      operationId: "viewResumeProjects"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "fetched upon successful login"
+        required: true
+        type: "string"
+      - name: "post_id"
+        in: "path"
+        description: "fetched on selection of link to blog post"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "successful operation"
+        "400":
+          description: "Invalid link"
+        "404":
+          description: "Blog post not found"
+    put:
+      tags:
+      - "resumeprojects"
+      summary: "Update blog message"
+      description: ""
+      operationId: "updateResumeProjects"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "Fetched upon successful login"
+        required: true
+        type: "string"
+      - name: "post_id"
+        in: "path"
+        description: "Fetched on selection to update post"
+        required: true
+        type: "integer"
+      - name: "title"
+        in: "formData"
+        description: "blog post title"
+        required: true
+        type: "string"
+      - name: "place(s)"
+        in: "formData"
+        description: "place(s) on which blog post is about"
+        required: false
+        type: "string"
+      - name: "blog text"
+        in: "formData"
+        description: "blog text body"
+        required: true
+        type: "string"
+      - name: "blog_photos"
+        in: "formData"
+        description: "photos to update"
+        required: false
+        type: "file"
+      responses:
+        "200":
+          description: "Successful operation"
+        "400":
+          description: "Unable to update blog post"
+        "404":
+          description: "Blog post not found"
+    delete:
+      tags:
+      - "resumeprojects"
+      summary: "Delete blog message"
+      description: ""
+      operationId: "deleteResumeProjects"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "User who created the blog message"
+        required: true
+        type: "string"
+      - name: "post_id"
+        in: "path"
+        description: "The message post to be deleted"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "Successful operation"
+        "400":
+          description: "Invalid blog_id"
+        "404":
+          description: "Blog post not found"
+  /connection/{user_id_1}/{user_id_2}/pending:
+    post:
+      tags:
+      - "connection"
+      summary: "Have a connection pending between two users"
+      description: ""
+      operationId: "createConnection"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "user_id_1"
+        in: "path"
+        description: "fetched upon successful login"
+        required: true
+        type: "string"
+      - name: "user_id_2"
+        in: "path"
+        description: "fetched on selection of link to blog post"
+        required: true
+        type: "integer"
+      - name: "blog_photos"
+        in: "formData"
+        description: ""
+        required: true
+        type: "file"
+      responses:
+        "200":
+          description: "Successful operation"
+        "400":
+          description: "Unable to create blog post"
+  /connection/{user_id_1}/{user_id_2}/status:       
+    get:
+      tags:
+      - "connection"
+      summary: "Get connection status between two users"
+      description: ""
+      operationId: "connectionStatus"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "user_id_1"
+        in: "path"
+        description: "fetched upon successful login"
+        required: true
+        type: "string"
+      - name: "user_id_2"
+        in: "path"
+        description: "fetched on selection of link to blog post"
+        required: true
+        type: "integer"
+      - name: "blog_photos"
+        in: "formData"
+        description: ""
+        required: true
+        type: "file"
+      responses:
+        "200":
+          description: "Successful operation"
+        "400":
+          description: "Unable to create blog post"
+  /connection/{user_id_1}/{user_id_2}/duration:     
+    get:
+      tags:
+      - "connection"
+      summary: "Get duration of connection"
+      description: "Returns a single blog post"
+      operationId: "viewConnection"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "user_id_1"
+        in: "path"
+        description: "fetched upon successful login"
+        required: true
+        type: "string"
+      - name: "user_id_2"
+        in: "path"
+        description: "fetched on selection of link to blog post"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+        "400":
+          description: "Invalid link"
+        "404":
+          description: "Blog post not found"
+  /connection/{user_id_1}/{user_id_2}/delete:       
+    delete:
+      tags:
+      - "connection"
+      summary: "Delete connection between two users"
+      description: ""
+      operationId: "deleteConnection"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "user_id_1"
+        in: "path"
+        description: "fetched upon successful login"
+        required: true
+        type: "string"
+      - name: "user_id_2"
+        in: "path"
+        description: "fetched on selection of link to blog post"
+        required: true
+        type: "integer"
+      - name: "blog_photos"
+        in: "formData"
+        description: ""
+        required: true
+        type: "file"
+      responses:
+        "200":
+          description: "Successful operation"
+        "400":
+          description: "Unable to create blog post"  
+
+
+
