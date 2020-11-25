@@ -1,168 +1,355 @@
-# EC2 creation for POSTGRES SQL
+More PostgreSQL
+CREATE Sports Database
+CREATE DATABASE Sports;
+CREATE TABLE Game
+(MatchName VARCHAR,
+ Win INTEGER,
+ Loss INTEGER);
+ 
+INSERT INTO Game
+VALUES('Match A', 2, 4),
+('Match B', 2, 2),
+('Match C', 4, 1),
+('Match D', 2, 0),
+('Match E', 2, 1),
+('Match F', 2, 2),
+('Match G', 1, 3),
+('Match H', 3, 3);
 
-Very brief overview for creating an EC2 instance and connecting remotely through Python scripts. This is the set up configuration only at a very base level without taking into consideration neccesary security steps in limiting IP access etc etc.
+CREATE TABLE Players
+(
+ Name VARCHAR,
+ Country VARCHAR
+);
 
-## Create EC2 instance
+INSERT INTO Players
+VALUES('Jack', 'Australia'),
+('Kate', 'Brazil'),
+('Mario', 'China'),
+('Dan', 'USA');
 
-1. Choose Ubuntu Server 64 bit
-![Ubuntu Sever Selection](docs/sever_selection.jpg)
-2. Select appropriate tier (t2 micro free in this case) 
-![select tier](docs/configuration_size.jpg)
-3. Select Next Configure Instance Details
-4. Select Next Add Storage (unless custom settings required)
-5. Storage has been left as the default in this instance
-6. Select Next Add tags
-7. Tags have been left as default in this instance
-8. Select next and you should now be on the security page
-![Security Page](docs/security_page.jpg)
-9. Next add a rule
-![Security Add](docs/security_page_add_rule.jpg) 
-10.  Rule type PostgresSQL, Source set to 0.0.0.0/0
-![Security Postgres](docs/security_page_postgres.jpg)
-11. Select Review and jpg
-12. Choose key pair or existing key pair. Make sure you are of possesion of the key if choosing new key pair.
-13. Launch Instance
+CREATE TABLE NominatedCountries
+(
+ Name VARCHAR
+);
 
-## SSH into instance
+INSERT INTO NominatedCountries
+VALUES('Australia'),
+('China'),
+('Cameron');
+Subquery, IN and NOT IN
+SELECT Name, Country
+FROM Players
+WHERE Country IN (SELECT Name FROM NominatedCountries);
+SELECT Name, Country
+FROM Players
+WHERE Country NOT IN (SELECT Name FROM NominatedCountries);
+CASE
+SELECT MatchName, Win, Loss,
+CASE
+    WHEN Win > Loss THEN 'Home Team Won'
+    WHEN Win < Loss THEN 'Away Team Won'
+    ELSE 'It is a Tie'
+END AS Result
+FROM Game;
+CREATE TABLE FinalResults AS
+SELECT MatchName, Win, Loss,
+CASE
+    WHEN Win > Loss THEN 'Home Team Won'
+    WHEN Win < Loss THEN 'Away Team Won'
+    ELSE 'It is a Tie'
+END AS Result
+FROM Game;
+Now, connect to PizzaRestaurant Database:
 
-1. Take note of public IP address for the created instance eg:ec2-54-88-60-6.compute-1.amazonaws.com or 54.88.60.6. If an elastic IP has not been set then these could change and need to be updated
-2. Check the permissions of the key that was downloaded in the previous section step 10. Navigate to where the key was saved in your system then:
-    ```
-    :~/key$ ls -l
-    total 8
-    -rwx------ 1 colforst colforst 1700 Oct 27 13:17 aws_educate.pem
-    -rwx------ 1 colforst colforst 1692 Oct 26 15:56 duck.pem
-    :~/key$
-    ```
-    This checks the permissions of the key. Both keys here have permissions set for only the owner which is what we want. The command required to set these permissions for duck for example is:
+More Subquery
+SELECT * 
+FROM items
+WHERE item_price > ( SELECT AVG(item_price)
+                     FROM items );
+SELECT * 
+FROM items
+WHERE item_price < ( SELECT AVG(item_price)
+                     FROM items );
+Date functions
+SELECT CURRENT_DATE;
+SELECT TO_CHAR(CURRENT_DATE, 'dd/mm/yyyy') AS order_date;
 
-    ```
-    :~/key$ chmod 700 duck.pem
-    ```
-3. Now we can use this key to connect to our instance. You can either be in the folder that the key is in or type the absolute path. For example:
+SELECT TO_CHAR(CURRENT_DATE, 'dd/mm/yy') AS order_date;
 
-   This command can be used with the absolute path
-    ```
-    :~$ ssh -i /home/colforst/key/duck.pem ubuntu@54.88.60.6
-    ```
-    Or this command can be used if in the folder
-    ```
-    :~/key$ ssh -i duck.pem ubuntu@54.88.60.6
-    ```
-   Also note ubuntu is the user name of the instance we created
+SELECT TO_CHAR(CURRENT_DATE, 'mm/yy') AS order_date;
 
-4. OPTIONAL ONLY - if we are always connecting to an instance we can set a config file to enable us to write a shortcut to connect. It is basically the steps as outlined previously but put into a script. 
-   1. Go to your .ssh directory. The standard directory is in /home/username
-   ```
-   :~$ pwd
-   /home/colforst
-   :~$ ls -a
-   .   .bash_history  .bashrc  .config     .ipython  .jupyter    .local       .mume     .psql_history  .python_history  .sudo_as_admin_successful  .vscode-server  .xsession         key
-   ..  .bash_logout   .cache   .gitconfig  .john     .landscape  .motd_shown  .profile  .pylint.d      .ssh             .viminfo                   .wget-hsts      .xsession#enable
-   ```
-   I have used the ls -a command to show hidden files and we can see the .ssh file is in there.
-   2. Create the config file in the .ssh folder
-   ```
-   :~$ cd .ssh
-   :~/.ssh$ touch config
-   ```
-   3. Open the file usingL
-   ```
-   :~/.ssh$ vim config
-   ```
-   4. The edits are as follows.
-   ```
-   Host *
-       PORT 22
-   Host ec2db
-       HostName 54.88.60.6
-       User ubuntu
-       IdentityFile /home/colforst/key/duck.pem
-   ```
-   The host ec2db was created by me and is now the shortcut to connect to the system. With this file in place I can now connect to the instance with:
+SELECT TO_CHAR(CURRENT_DATE, 'mm') AS order_date;
 
-   ```
-   :~$ ssh ec2db
-   ```
-   as the command. You can enter more then one connection with the config file and also use it with keys stored in id_rsa.
+SELECT TO_CHAR(CURRENT_DATE, 'Mon dd, yyyy') AS order_date;
+SELECT order_id, order_date, now() - order_date AS order_age
+FROM orders;
+SELECT order_id, order_date, AGE(order_date)
+FROM orders;
 
-## Install POSTGRES SQL on EC2 instance
+SELECT order_id, order_date, AGE('2022-12-31', order_date)
+FROM orders;
+SELECT order_id,
+       EXTRACT (DAY FROM order_date) AS Day,
+       EXTRACT (YEAR FROM order_date) AS Year,
+       EXTRACT (MONTH FROM order_date) AS Month
+FROM orders;
+SELECT * 
+FROM orders
+WHERE EXTRACT(YEAR FROM order_date) = '2020';
+SCHEMA and Access Privileges
+To make database objects more organised and manageable you will need to use schemas. Schemas allow multiple users access a database in a manageable manner withour interference. ALso, allow only authorised users access database objects.
 
-1. SSH into the ec2 instance and install postgres.
-   ```
-   sudo apt update
-   sudo apt-get install postgresql
-   ```
-2. Login into the postgres shell using:
-   ```
-   sudo -u postgres psql
-   ```
-3. Postgres sql is now running on the instance. However it has not been set up for remote queries or inputs from say a python script.
+List of schemas
+\dn
+Show current schema
+SELECT current_schema();
+View current search path
+SHOW search_path;
+Create new schema
+CREATE SCHEMA ccc
+Add schema to search path
+SET search_path TO ccc;
+Create a table in the ccc schema
+CREATE TABLE userdata(
+us_id INTEGER,
+us_name VARCHAR
+);
 
-## Upddate POSTGRES SQL for access remotely using python scripts.
+INSERT INTO userdata
+VALUES (12, 'Jamal'), (13, 'Bruce');
+Query records from created table using ccc schema
+SELECT * FROM userdata;
 
-1. Log into postgres on the ec2 instance as outlined in step 2 of the previous section.
-2. Type the following command and copy the path that is listed.
-   ```
-   SHOW config_file;
-   ```
-   The path listed comes out as:
-   ```
-    /etc/postgresql/12/main/postgresql.conf
-   ```
-3. Exit postgres sql and type the following in your command console to open this file to edit.
-   ```
-   sudo vim /etc/postgresql/12/main/postgresql.conf
-   ```
-   Go down the page until you find:
-   ```
-   #listen_addresses = 'localhost'
-   ```
-   Uncomment the line and change the above to
-   ```
-   listen_addresses = '*'
-   ```
-   Postgres sql will know be listening to all addresses. Save and exit vim
-4. Type the following command and copy the path that is listed.
-   ```
-   SHOW hba_file;
-   ```
-   The path listed comes out as:
-   ```
-    /etc/postgresql/12/main/pg_hba.conf
-   ```
-5. Exit postgres sql and type the following in your command console to open this file to edit.
-   ```
-   sudo vim /etc/postgresql/12/main/pg_hba.conf
-   ```
-   Scroll down to the very bottom where the entries are as follows:
-   ```
-   # replication privilege.
-   local   replication     all                                     peer
-   host    replication     all             127.0.0.1/32            md5
-   host    replication     all             ::1/128                 md5
-   ```
-   Create a new line and enter the following on the new line
-   ```
-   host    all             all             0.0.0.0/0               md5
-   ```
-   The table should now look like this:
-   ```
-   # replication privilege.
-   local   replication     all                                     peer
-   host    replication     all             127.0.0.1/32            md5
-   host    replication     all             ::1/128                 md5
+SELECT * FROM ccc.userdata;
+Query records from created table using public schema
+SELECT * FROM public.userdata;
 
-   host    all             all             0.0.0.0/0               md5
-   ```
-   Postgres sql will now also accept requests from all IP addresses. Save and exit vim.
-6. Now that these changes have been made restart postgres sql:
-   ```
-   sudo service postgresql restart
-   ```
-7. Add a password to the user postgres. First log into postgres shell as per previous step
-   ```
-   ALTER ROLE postgres WITH PASSWORD 'postgres';
-   ```
-   In this example postgres has been used as the password
+-- ERROR:  relation "public.userdata" does not exist
+Create table in the public schema
+CREATE TABLE public.userdata(
+us_id INTEGER,
+us_name VARCHAR
+);
 
+INSERT INTO public.userdata
+VALUES (12, 'Garret'), (13, 'Sam');
+Query records from created table using public schema
+SELECT * FROM public.userdata;
+Drop ccc schema
+DROP SCHEMA ccc;
+
+-- ERROR:  cannot drop schema ccc because other objects depend on it
+-- DETAIL:  table ccc.mytable depends on schema ccc
+DROP SCHEMA ccc CASCADE;
+
+-- NOTICE:  drop cascades to table ccc.mytable
+SCHEMA and Access Privileges Excercise
+SCHEMA and Access Privileges
+
+CREATE DATABASE dcompany;
+CREATE ROLE user1 LOGIN;
+
+CREATE ROLE user2 LOGIN;
+
+CREATE ROLE user3 LOGIN;
+
+CREATE ROLE user4 LOGIN;
+
+CREATE ROLE user5 LOGIN;
+
+CREATE ROLE payroll LOGIN;
+
+CREATE ROLE hr LOGIN;
+
+CREATE ROLE marketing LOGIN;
+\c dcompany
+CREATE TABLE sales
+(id SERIAL,
+item VARCHAR(10),
+saleamount NUMERIC
+);
+
+INSERT INTO sales (item, saleamount)
+VALUES ('Item1', 125.2), ('Item2', 325.2),('Item3', 165.8);
+CREATE TABLE products
+(id SERIAL,
+product VARCHAR(10),
+description TEXT
+);
+
+INSERT INTO products (product, description)
+VALUES ('Product1', 'Description1'), ('Product2', 'Description2'),('Product3', 'Description3');
+CREATE TABLE employees
+(id SERIAL,
+empname VARCHAR(10),
+salary NUMERIC
+);
+
+INSERT INTO employees (empname, salary)
+VALUES ('Jack', 120), ('Sara', 80),('James', 140);
+Login into a separate PostgreSQL session as payroll
+psql -U payroll dcompany
+Run some SELECT queries
+SELECT * 
+FROM employees;
+
+-- ERROR:  permission denied for table employees
+
+SELECT * 
+FROM products;
+
+-- ERROR:  permission denied for table products
+
+SELECT * 
+FROM sales;
+
+-- ERROR:  permission denied for table sales
+Try the same with all roles user1, user2, user3, user4, user5, marketing, and hr. All created roles can only LOGIN and nothing else, so should expect same error. It is not only SELECT but same applies on all privileges such as INSERT, UPDATE, and DELETE.
+
+GRANT payroll some privileges
+GRANT ALL
+ON sales
+TO payroll;
+
+GRANT ALL
+ON sales_id_seq
+TO payroll;
+
+GRANT SELECT
+ON products
+TO payroll;
+Run some testing queries
+SELECT * 
+FROM products;
+
+SELECT * 
+FROM sales;
+
+INSERT INTO sales (item, saleamount)
+VALUES ('Item5', 3425.2);
+
+SELECT * 
+FROM employees;
+
+-- ERROR:  permission denied for table employees
+
+INSERT INTO products (product, description)
+VALUES ('Product5', 'Description5');
+
+-- ERROR:  permission denied for table products
+GRANT marketing some privileges
+GRANT ALL
+ON products, products_id_seq
+TO marketing;
+Run some testing queries
+SELECT * 
+FROM products;
+
+INSERT INTO products (product, description)
+VALUES ('Product6', 'Description6');
+
+DELETE FROM products
+WHERE product = 'Product3';
+
+SELECT * 
+FROM employees;
+
+-- ERROR:  permission denied for table employees
+
+SELECT * 
+FROM sales;
+
+-- ERROR:  permission denied for table sales
+GRANT hr some privileges
+GRANT ALL
+ON employees, employees_id_seq
+TO hr;
+Run some testing queries
+INSERT INTO employees (empname, salary)
+VALUES ('Martin', 125)
+
+UPDATE employees
+SET salary = 110
+WHERE empname = 'Sara';
+
+SELECT * 
+FROM employees;
+
+SELECT * 
+FROM products;
+
+-- ERROR:  permission denied for table products
+
+DELETE FROM products
+WHERE product = 'Product2';
+
+-- ERROR:  permission denied for table products
+
+SELECT * 
+FROM sales;
+
+-- ERROR:  permission denied for table sales
+GRANT user1 and user2 the payroll group_role
+GRANT payroll TO user1, user2;
+GRANT user3 and user4 the marketing group_role
+GRANT marketing TO user3, user4;
+GRANT user5 the hr group_role
+GRANT hr TO user5;
+Now do some testing, login using different users and check the granted privileges in a similar way as we did with group_roles payroll, hr, and marketing.
+user1 and user2 have same privileges as payroll
+user3 and user4 have same privileges as marketing
+user5 have same privileges as hr
+Show schemas
+\dn
+Create a new schema
+CREATE SCHEMA private;
+Create table in the private schema
+CREATE TABLE private.secretcodes(code VARCHAR);
+
+INSERT INTO private.secretcodes 
+VALUES ('ccc1357'),('ccc2468');
+View current search path
+SHOW search_path;
+Change search path
+SET search_path TO private, public;
+Query data from table secretcodes as superuser
+SELECT * 
+FROM secretcodes;
+Query data from table secretcodes as user1
+SELECT * 
+FROM private.secretcodes;
+
+-- ERROR:  permission denied for schema private
+GRANT payroll usage on private schema
+GRANT USAGE ON SCHEMA private
+TO payroll;
+Query data from table secretcodes as user1
+SELECT * 
+FROM private.secretcodes;
+
+-- ERROR:  permission denied for table secretcodes
+GRANT payroll SELECT access to secretcodes table
+GRANT SELECT
+ON secretcodes
+TO payroll;
+GRANT hr SELECT access to secretcodes table
+GRANT SELECT
+ON secretcodes
+TO hr;
+Query data from table secretcodes as user5
+SELECT * 
+FROM private.secretcodes;
+
+-- ERROR:  permission denied for schema private
+GRANT hr usage on private schema
+GRANT USAGE ON SCHEMA private
+TO hr;
+Query data from table secretcodes as user5
+SELECT * 
+FROM private.secretcodes;
+Create table as user5 in private schema
+CREATE TABLE private.somedata(datadescrip VARCHAR);
+
+-- ERROR:  permission denied for schema private
+We have previously granted USAGE privilege which allows the use of the schema but not creation of objects. To allow creation of objects need to GRANT CREATE to roles. You may want to practice the same exercise but this time using CREATE and not USAGE.

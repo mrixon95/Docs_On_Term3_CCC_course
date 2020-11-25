@@ -78,6 +78,7 @@ A10: (...., 'sydney')
     
 	sudo apt-get --purge remove postgresql
 	sudo apt-get -y install postgresql
+	sudo service postgresql start
 	
 	/* Connect to PostgreSQL using the postgres role */
 	sudo -i -u postgres

@@ -1,168 +1,219 @@
-# EC2 creation for POSTGRES SQL
+Always use HTTPS
+Bearer authentication is where a toekn is associated with a user
+Json web token JWT is a bearer token
+OAUTH - sign in with gmail, facebook etc.
+Sign in with a 3rd party service, google redirects people to the website google
+Finger print is a username and password
 
-Very brief overview for creating an EC2 instance and connecting remotely through Python scripts. This is the set up configuration only at a very base level without taking into consideration neccesary security steps in limiting IP access etc etc.
+Everytime you create a model you need a schema to go with that model
 
-## Create EC2 instance
+First Kahoot
 
-1. Choose Ubuntu Server 64 bit
-![Ubuntu Sever Selection](docs/sever_selection.jpg)
-2. Select appropriate tier (t2 micro free in this case) 
-![select tier](docs/configuration_size.jpg)
-3. Select Next Configure Instance Details
-4. Select Next Add Storage (unless custom settings required)
-5. Storage has been left as the default in this instance
-6. Select Next Add tags
-7. Tags have been left as default in this instance
-8. Select next and you should now be on the security page
-![Security Page](docs/security_page.jpg)
-9. Next add a rule
-![Security Add](docs/security_page_add_rule.jpg) 
-10.  Rule type PostgresSQL, Source set to 0.0.0.0/0
-![Security Postgres](docs/security_page_postgres.jpg)
-11. Select Review and jpg
-12. Choose key pair or existing key pair. Make sure you are of possesion of the key if choosing new key pair.
-13. Launch Instance
+Q1. A python package that generates fake data for you
+A1. Faker
 
-## SSH into instance
+Q2. To fix the issue of sending an empty title, best to 
+A2. Use/Create validator classes
 
-1. Take note of public IP address for the created instance eg:ec2-54-88-60-6.compute-1.amazonaws.com or 54.88.60.6. If an elastic IP has not been set then these could change and need to be updated
-2. Check the permissions of the key that was downloaded in the previous section step 10. Navigate to where the key was saved in your system then:
-    ```
-    :~/key$ ls -l
-    total 8
-    -rwx------ 1 colforst colforst 1700 Oct 27 13:17 aws_educate.pem
-    -rwx------ 1 colforst colforst 1692 Oct 26 15:56 duck.pem
-    :~/key$
-    ```
-    This checks the permissions of the key. Both keys here have permissions set for only the owner which is what we want. The command required to set these permissions for duck for example is:
+Q3. The __ is where you create an object without exposing its creation logic
+A3. Factory Pattern
 
-    ```
-    :~/key$ chmod 700 duck.pem
-    ```
-3. Now we can use this key to connect to our instance. You can either be in the folder that the key is in or type the absolute path. For example:
+Q4. An intregration test us used to test that all the modules in our application when integrated work as expected
+A4. True
 
-   This command can be used with the absolute path
-    ```
-    :~$ ssh -i /home/colforst/key/duck.pem ubuntu@54.88.60.6
-    ```
-    Or this command can be used if in the folder
-    ```
-    :~/key$ ssh -i duck.pem ubuntu@54.88.60.6
-    ```
-   Also note ubuntu is the user name of the instance we created
+Q5. Hooks that allow us to set things up and tear things down during tests are known as __
+A5. Fixtures
 
-4. OPTIONAL ONLY - if we are always connecting to an instance we can set a config file to enable us to write a shortcut to connect. It is basically the steps as outlined previously but put into a script. 
-   1. Go to your .ssh directory. The standard directory is in /home/username
-   ```
-   :~$ pwd
-   /home/colforst
-   :~$ ls -a
-   .   .bash_history  .bashrc  .config     .ipython  .jupyter    .local       .mume     .psql_history  .python_history  .sudo_as_admin_successful  .vscode-server  .xsession         key
-   ..  .bash_logout   .cache   .gitconfig  .john     .landscape  .motd_shown  .profile  .pylint.d      .ssh             .viminfo                   .wget-hsts      .xsession#enable
-   ```
-   I have used the ls -a command to show hidden files and we can see the .ssh file is in there.
-   2. Create the config file in the .ssh folder
-   ```
-   :~$ cd .ssh
-   :~/.ssh$ touch config
-   ```
-   3. Open the file usingL
-   ```
-   :~/.ssh$ vim config
-   ```
-   4. The edits are as follows.
-   ```
-   Host *
-       PORT 22
-   Host ec2db
-       HostName 54.88.60.6
-       User ubuntu
-       IdentityFile /home/colforst/key/duck.pem
-   ```
-   The host ec2db was created by me and is now the shortcut to connect to the system. With this file in place I can now connect to the instance with:
+ 
+Q6. __ fixtures will only run before and after all the tests in the module
+A6. Class
 
-   ```
-   :~$ ssh ec2db
-   ```
-   as the command. You can enter more then one connection with the config file and also use it with keys stored in id_rsa.
+Q7.  
+A7.
 
-## Install POSTGRES SQL on EC2 instance
 
-1. SSH into the ec2 instance and install postgres.
-   ```
-   sudo apt update
-   sudo apt-get install postgresql
-   ```
-2. Login into the postgres shell using:
-   ```
-   sudo -u postgres psql
-   ```
-3. Postgres sql is now running on the instance. However it has not been set up for remote queries or inputs from say a python script.
+Second Kahoot!
+Q1. Python ORM
+A1. SQLAlchemy
 
-## Upddate POSTGRES SQL for access remotely using python scripts.
+Q2. Flask comes with a nice command to load our Flask app into an interactive shell
+A2. Flask shell
 
-1. Log into postgres on the ec2 instance as outlined in step 2 of the previous section.
-2. Type the following command and copy the path that is listed.
-   ```
-   SHOW config_file;
-   ```
-   The path listed comes out as:
-   ```
-    /etc/postgresql/12/main/postgresql.conf
-   ```
-3. Exit postgres sql and type the following in your command console to open this file to edit.
-   ```
-   sudo vim /etc/postgresql/12/main/postgresql.conf
-   ```
-   Go down the page until you find:
-   ```
-   #listen_addresses = 'localhost'
-   ```
-   Uncomment the line and change the above to
-   ```
-   listen_addresses = '*'
-   ```
-   Postgres sql will know be listening to all addresses. Save and exit vim
-4. Type the following command and copy the path that is listed.
-   ```
-   SHOW hba_file;
-   ```
-   The path listed comes out as:
-   ```
-    /etc/postgresql/12/main/pg_hba.conf
-   ```
-5. Exit postgres sql and type the following in your command console to open this file to edit.
-   ```
-   sudo vim /etc/postgresql/12/main/pg_hba.conf
-   ```
-   Scroll down to the very bottom where the entries are as follows:
-   ```
-   # replication privilege.
-   local   replication     all                                     peer
-   host    replication     all             127.0.0.1/32            md5
-   host    replication     all             ::1/128                 md5
-   ```
-   Create a new line and enter the following on the new line
-   ```
-   host    all             all             0.0.0.0/0               md5
-   ```
-   The table should now look like this:
-   ```
-   # replication privilege.
-   local   replication     all                                     peer
-   host    replication     all             127.0.0.1/32            md5
-   host    replication     all             ::1/128                 md5
+Q3. Which of the following is true?
+>>> new_book = Book()
+>>> new_book.title = "Great Expectations"
+>>> db.session.add(new_book)
+A3. Still need to run commit
 
-   host    all             all             0.0.0.0/0               md5
-   ```
-   Postgres sql will now also accept requests from all IP addresses. Save and exit vim.
-6. Now that these changes have been made restart postgres sql:
-   ```
-   sudo service postgresql restart
-   ```
-7. Add a password to the user postgres. First log into postgres shell as per previous step
-   ```
-   ALTER ROLE postgres WITH PASSWORD 'postgres';
-   ```
-   In this example postgres has been used as the password
+Q4. Which of the following is true?
+>>> book = Book.query.filter_by(id = 2).first()
+>>> book.title = "Updated title"
+>>> db.session.commit()
+A4. existing record is updated
 
+
+Q5. Serialization and Deserialization Python package is marshmallow
+A5. Marshmallow
+
+Q6. In Marshmallow we have the function _____ for serialization
+A6. Dump
+
+Q7. In Marshmallow we have the function _____ for deserialization
+A7. Load
+
+Q8. This will ____
+>>> Book.query.all()
+
+A8. View all records
+
+
+
+
+```
+DB_URI=postgresql+psycopg2://postgres:QK_cSqG,q8uUFz-F@52.91.5.95:5432/library_api
+```
+postgres:QK_cSqG,q8uUFz-F@52.91.5.95:5432/library_api
+
+psql --username=postgres --host=52.91.5.95 --port=5432 --dbname=library_api --password
+
+
+
+JWT token is made up of 3 parts, a header, payload and verify signature
+
+Header: info about the token
+
+
+Payload: data about the jwt
+
+
+Verify signature: Hash of the header, payload and secret
+
+
+
+import os
+# We are going to have different configuration variables depending on whether
+# whether we are in a testing, development or production environment
+
+# We want a different db connection depending on whether we are testing or we are in development
+
+# Robust configuration
+class Config(object):
+    SQLALCHEMY_DATABASE_URI = os.getenv("DB_URI")
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+
+# Inherit from Config
+class DevelopmentConfig(Config):
+    # Development environment specific configuration
+    DEBUG = True
+
+class ProductionConfig(Config):
+    pass
+
+class TestingConfig(Config):
+    TESTING = True
+
+environment = os.getenv("FLASK_ENV")
+
+# Change the configurations depending on our Flask env
+
+if environment == "production":
+    app_config = ProductionConfig()
+elif environment == "testing":
+    app_config = TestingConfig()
+else:
+    app_config = DevelopmentConfig()
+
+
+
+
+
+# Factory pattern is where you create an object without exposing its creation logic
+def create_app():
+    app = Flask(__name__)
+    app.config.from_object("default_settings.app_config")
+
+    from database import init_db
+    db = init_db(app)
+
+    from flask_marshmallow import Marshmallow
+    ma = Marshmallow(app)
+
+    from commands import db_commands
+    app.register_blueprint(db_commands)
+
+    from controllers import registerable_controllers
+
+    for controller in registerable_controllers:
+        app.register_blueprint(controller)
+
+
+    from marshmallow.exceptions import ValidationError
+
+    # Custom error handler
+    @app.errorhandler(ValidationError)
+    def handle_bad_request(error):
+        return (jsonify(error.messages), 400)
+
+    return app
+
+
+
+# We are going to have different configuration variables depending on whether
+# whether we are in a testing, development or production environment
+
+# We want a different db connection depending on whether we are testing or we are in development
+
+# Robust configuration
+
+# Add validation rules to the schema
+
+
+# we format the filename like test_*.py, it will be auto-discoverable by pytest.
+
+```
+python3 -m unittest discover -s tests -v
+```
+
+
+
+```
+DB_URI=postgresql+psycopg2://postgres:QK_cSqG,q8uUFz-F@52.91.5.95:5432/library_api
+```
+postgres:QK_cSqG,q8uUFz-F@52.91.5.95:5432/library_api
+
+psql --username=postgres --host=52.91.5.95 --port=5432 --dbname=library_api --password
+
+QK_cSqG,q8uUFz-F
+```
+ssh -i ~/.ssh/Term3Week5Day15.pem ubuntu@52.91.5.95
+```
+
+```
+sudo -i -u postgres psql
+```
+
+history 10
+
+
+
+
+eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2MDYyMDYzMzQsIm5iZiI6MTYwNjIwNjMzNCwianRpIjoiMmYzMzljMjUtY2E5MS00MTM3LWFkMzgtZTA0MjFhNzllZmY0IiwiZXhwIjoxNjA2MjkyNzM0LCJpZGVudGl0eSI6IjUiLCJmcmVzaCI6ZmFsc2UsInR5cGUiOiJhY2Nlc3MifQ.MuizzOKy8MYtCQKnUOOC-oRWnRDBda13xsZ8UvTIjtw
+
+
+
+{
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2MDYyMDk1MzMsIm5iZiI6MTYwNjIwOTUzMywianRpIjoiZmQyZjc1MWUtNjkyMy00MjQyLTkwMmEtYzc5OTY3YWE5YWM4IiwiZXhwIjoxNjA2Mjk1OTMzLCJpZGVudGl0eSI6IjEiLCJmcmVzaCI6ZmFsc2UsInR5cGUiOiJhY2Nlc3MifQ._ndxw1Rwa5Fx45ILpr7FMzsAO0x4lzejNpewuNTM7zU"
+}
+
+
+sudo vim /etc/postgresql/12/main/postgresql.conf
+
+log_statement = all
+log_destination = 'stderr'
+logging_collector = on
+log_directory = 'pg_log'
+log_filename = 'postgresql-%Y-%m-%d_%H%M%S.log'
+log_min_error_statement = error
+
+sudo systemctl restart postgresql
