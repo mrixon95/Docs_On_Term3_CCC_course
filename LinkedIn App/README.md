@@ -1,6 +1,8 @@
 # Overview
 
-My Trello board for this app is located here: https://trello.com/b/7Y9qhmBJ/project-management
+My Trello board is [here](https://trello.com/b/7Y9qhmBJ/project-management)
+My swagger editor yml is [here](https://github.com/mrixon95/Docs_On_Term3_CCC_course/blob/main/LinkedIn%20App/connectITAPI.yaml)
+
 
 My app is designed to be a LinkedIn site for IT professionals.
 Similar to LinkedIn, IT professionals will be able to:
