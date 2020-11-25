@@ -31,6 +31,13 @@ Docs for my app:
 ### Activity Feed page
 ![Activity_Feed_Wireframe](docs/Activity_Feed_Wireframe.png)
 
+### Diary page
+![Diary_Page_Wireframe](docs/Diary_Page_Wireframe.png)
+
+### Salary data page
+![Salary_Page_Wireframe](docs/Salary_Page_Wireframe.png)
+
+
 ### Settings page
 ![Setting_Page_Wireframe](docs/Setting_Page_Wireframe.png)
 
@@ -47,12 +54,24 @@ Docs for my app:
 
 
 ## Installation
-In order to install this application:-
+In order to install this application:
 
-```Code```python3.8-venv and python3-pip installed on your system.
-Clone the application onto your system from GitHub
-Navigate to the traveldiary folder, create and activate the python3.8 virtual environment.
-Install application dependencies within the activated Python3.8 virtual environment by running pip install -r requirements.txt.
+Install python 3.8, python3.8-venv and python3-pip on your system.
+On Ubuntu run ```sudo apt install python3.8 python3.8-venv```
+Verify that it install successfully by running ```python3.8 --version```
+
+Secondly install pip3 the python3 package manager.
+On Ubuntu run ```sudo apt-get install python3-pip```
+or ```python3 -m pip install pip```
+
+Thirdly clone the application onto your system by running ```git clone https://github.com/mrixon95/Docs_On_Term3_CCC_course.git```
+and cd into the directory
+
+Fourthly download a virtual environment and activate it.
+On Ubuntu run ```python3 -m venv venv``` to download the module
+and ```source venv/bin/activate``` to activate the virtual environment.
+.
+Finally install application dependencies within the activated Python3.8 virtual environment by running ```pip3 install -r requirements.txt```.
 
 
 ## Setup
