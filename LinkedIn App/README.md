@@ -1,9 +1,5 @@
 # Overview
 
-My Trello board is [here](https://trello.com/b/7Y9qhmBJ/project-management)
-My swagger editor yml is [here](https://github.com/mrixon95/Docs_On_Term3_CCC_course/blob/main/LinkedIn%20App/connectITAPI.yaml)
-
-
 My app is designed to be a LinkedIn site for IT professionals.
 Similar to LinkedIn, IT professionals will be able to:
 * create an account
@@ -16,6 +12,12 @@ Similar to LinkedIn, IT professionals will be able to:
 Different from LinkedIn as of November, 2020, IT professionals will be able to:
 * freely advertise themselves for freelance IT work
 * join groups with people who have similar interests
+
+Docs for my app:
+* [Trello board](https://trello.com/b/7Y9qhmBJ/project-management)
+* [Swagger editor yml](https://github.com/mrixon95/Docs_On_Term3_CCC_course/blob/main/LinkedIn%20App/connectITAPI.yaml)
+
+
 
 
 # Wireframes
@@ -33,5 +35,23 @@ Different from LinkedIn as of November, 2020, IT professionals will be able to:
 ![Setting_Page_Wireframe](docs/Setting_Page_Wireframe.png)
 
 ### Entity Relationship diagram
-![Entity_Relationship_Diagram](docs/DatabaseTerm3Project.png)
+
+* Each User can have multiple photos, posts, comments on posts, study qualifications, past work positions, certifications, resumes and projects and connections
+* Each post can have many comments
+* Each message has 2 users (one sending the message and one receiving the message)
+* Each connection has 2 users (status is either pending or confirmed)
+
+
+
+![Entity_Relationship_Diagram](docs/ERD_Diagram_dbdiagramio.png)
+
+
+## Setup
+Create a .env file with the .env.example template within the src folder and populate the required fields within the .env file.
+
+## Custom Commands
+These following flask commands below are for automating tasks related to database tables and for testing during the development phase.
+1. flask db create: creates database tables defined in registered models.
+2. flask db seed: populates database tables with dummy data using faker module.
+3. flask db drop: drops all database tables defined in registered models.
 
